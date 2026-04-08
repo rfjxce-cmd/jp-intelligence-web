@@ -153,22 +153,15 @@ function GetStartedContent() {
 
   return (
     <div className="min-h-screen pt-24 pb-20 px-4 sm:px-6 relative">
-      <div
-        className="absolute inset-0 opacity-[0.02]"
-        style={{
-          backgroundImage:
-            "linear-gradient(#c9a84c 1px, transparent 1px), linear-gradient(to right, #c9a84c 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }}
-      />
+      <div className="absolute inset-0 bg-grid" />
 
       <div className="relative max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#c9a84c] mb-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-white/25 mb-3">
             Get Started
           </p>
-          <h1 className="text-3xl sm:text-4xl font-bold text-[#f5f5f5]">
+          <h1 className="text-3xl sm:text-4xl font-bold text-white">
             Let&apos;s Build Your AI System
           </h1>
         </div>
@@ -185,10 +178,10 @@ function GetStartedContent() {
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${
                       done
-                        ? "bg-[#c9a84c] text-[#0a0a0a]"
+                        ? "bg-white text-black"
                         : active
-                        ? "bg-[#1a1a1a] border-2 border-[#c9a84c] text-[#c9a84c]"
-                        : "bg-[#111111] border border-[#2a2a2a] text-[#444444]"
+                        ? "bg-[#0a0a0a] border-2 border-white/40 text-white"
+                        : "bg-[#080808] border border-[#1a1a1a] text-white/20"
                     }`}
                   >
                     {done ? (
@@ -199,7 +192,7 @@ function GetStartedContent() {
                   </div>
                   <span
                     className={`text-xs mt-1.5 font-medium transition-colors duration-300 ${
-                      active ? "text-[#c9a84c]" : done ? "text-[#888888]" : "text-[#333333]"
+                      active ? "text-white" : done ? "text-white/50" : "text-white/20"
                     }`}
                   >
                     {label}
@@ -208,7 +201,7 @@ function GetStartedContent() {
                 {i < stepLabels.length - 1 && (
                   <div
                     className={`w-16 sm:w-24 h-px mx-2 mb-5 transition-all duration-500 ${
-                      done ? "bg-[#c9a84c]" : "bg-[#1a1a1a]"
+                      done ? "bg-white/40" : "bg-[#1a1a1a]"
                     }`}
                   />
                 )}
@@ -220,10 +213,10 @@ function GetStartedContent() {
         {/* Step 1: Business Info */}
         {step === 1 && (
           <form onSubmit={handleStep1Submit}>
-            <div className="bg-[#111111] border border-[#1a1a1a] rounded-2xl p-7 sm:p-9 space-y-5">
+            <div className="bg-[#080808] border border-[#131313] rounded-2xl p-7 sm:p-9 space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#555555] mb-2">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-white/25 mb-2">
                     Your Name *
                   </label>
                   <input
@@ -236,7 +229,7 @@ function GetStartedContent() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#555555] mb-2">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-white/25 mb-2">
                     Email Address *
                   </label>
                   <input
@@ -252,7 +245,7 @@ function GetStartedContent() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#555555] mb-2">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-white/25 mb-2">
                     Phone Number *
                   </label>
                   <input
@@ -265,7 +258,7 @@ function GetStartedContent() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#555555] mb-2">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-white/25 mb-2">
                     Business Name *
                   </label>
                   <input
@@ -280,8 +273,8 @@ function GetStartedContent() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-[#555555] mb-2">
-                  Website <span className="text-[#333333] normal-case font-normal">(optional)</span>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-white/25 mb-2">
+                  Website <span className="text-white/20 normal-case font-normal">(optional)</span>
                 </label>
                 <input
                   type="url"
@@ -300,7 +293,7 @@ function GetStartedContent() {
 
               <button
                 type="submit"
-                className="btn-gold w-full text-[#0a0a0a] font-bold py-4 rounded-xl text-sm"
+                className="btn-primary w-full font-bold py-4 rounded-xl text-sm"
               >
                 Continue to Services →
               </button>
@@ -311,8 +304,8 @@ function GetStartedContent() {
         {/* Step 2: Select Services */}
         {step === 2 && (
           <form onSubmit={handleStep2Submit}>
-            <div className="bg-[#111111] border border-[#1a1a1a] rounded-2xl p-7 sm:p-9">
-              <p className="text-[#888888] text-sm mb-6">
+            <div className="bg-[#080808] border border-[#131313] rounded-2xl p-7 sm:p-9">
+              <p className="text-white/40 text-sm mb-6">
                 Select one or more services. You can always add more later.
               </p>
 
@@ -326,8 +319,8 @@ function GetStartedContent() {
                       onClick={() => toggleService(service.id)}
                       className={`w-full text-left p-5 rounded-xl border transition-all duration-200 ${
                         selected
-                          ? "border-[#c9a84c] bg-[#c9a84c]/5"
-                          : "border-[#1a1a1a] bg-[#0e0e0e] hover:border-[#2a2a2a]"
+                          ? "border-white/30 bg-white/[0.03]"
+                          : "border-[#131313] bg-black/30 hover:border-white/10"
                       }`}
                     >
                       <div className="flex items-center justify-between">
@@ -335,34 +328,34 @@ function GetStartedContent() {
                           <span className="text-2xl">{service.icon}</span>
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className={`font-semibold text-sm ${selected ? "text-[#f5f5f5]" : "text-[#888888]"}`}>
+                              <span className={`font-semibold text-sm ${selected ? "text-white" : "text-white/40"}`}>
                                 {service.name}
                               </span>
                               {"badge" in service && service.badge && (
-                                <span className="text-xs text-[#0a0a0a] bg-[#c9a84c] px-2 py-0.5 rounded-full font-semibold">
+                                <span className="text-xs bg-white text-black px-2 py-0.5 rounded-full font-semibold">
                                   {service.badge}
                                 </span>
                               )}
                             </div>
-                            <p className="text-xs text-[#555555] mt-0.5">
+                            <p className="text-xs text-white/25 mt-0.5">
                               {service.description}
                             </p>
                           </div>
                         </div>
                         <div className="text-right flex-shrink-0 ml-4">
-                          <p className={`font-bold text-sm ${selected ? "text-[#f5f5f5]" : "text-[#666666]"}`}>
+                          <p className={`font-bold text-sm ${selected ? "text-white" : "text-white/35"}`}>
                             ${service.setup}
                           </p>
-                          <p className="text-xs text-[#444444]">${service.monthly}/mo</p>
+                          <p className="text-xs text-white/20">${service.monthly}/mo</p>
                         </div>
                       </div>
 
                       {selected && (
-                        <div className="mt-3 pt-3 border-t border-[#c9a84c]/20 flex items-center gap-2">
-                          <svg className="w-3.5 h-3.5 text-[#c9a84c]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="mt-3 pt-3 border-t border-white/8 flex items-center gap-2">
+                          <svg className="w-3.5 h-3.5 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                           </svg>
-                          <span className="text-xs text-[#c9a84c] font-medium">Selected</span>
+                          <span className="text-xs text-white/60 font-medium">Selected</span>
                         </div>
                       )}
                     </button>
@@ -371,14 +364,14 @@ function GetStartedContent() {
               </div>
 
               {selectedServices.length > 0 && (
-                <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl p-4 mb-6">
+                <div className="bg-black border border-[#131313] rounded-xl p-4 mb-6">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-[#555555]">Setup total</span>
-                    <span className="font-bold text-[#f5f5f5]">${totalSetup}</span>
+                    <span className="text-white/25">Setup total</span>
+                    <span className="font-bold text-white">${totalSetup}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm mt-1.5">
-                    <span className="text-[#555555]">Monthly total</span>
-                    <span className="text-[#888888]">${totalMonthly}/mo</span>
+                    <span className="text-white/25">Monthly total</span>
+                    <span className="text-white/40">${totalMonthly}/mo</span>
                   </div>
                 </div>
               )}
@@ -393,13 +386,13 @@ function GetStartedContent() {
                 <button
                   type="button"
                   onClick={() => { setStep(1); setError(""); }}
-                  className="flex-1 border border-[#2a2a2a] text-[#666666] hover:text-[#f5f5f5] hover:border-[#3a3a3a] font-medium py-4 rounded-xl text-sm transition-all"
+                  className="flex-1 border border-[#1a1a1a] text-white/35 hover:text-white hover:border-[#222222] font-medium py-4 rounded-xl text-sm transition-all"
                 >
                   ← Back
                 </button>
                 <button
                   type="submit"
-                  className="flex-2 btn-gold text-[#0a0a0a] font-bold py-4 rounded-xl text-sm flex-1"
+                  className="flex-2 btn-primary font-bold py-4 rounded-xl text-sm flex-1"
                   disabled={selectedServices.length === 0}
                 >
                   Review Order →
@@ -411,40 +404,40 @@ function GetStartedContent() {
 
         {/* Step 3: Review & Pay */}
         {step === 3 && (
-          <div className="bg-[#111111] border border-[#1a1a1a] rounded-2xl p-7 sm:p-9">
+          <div className="bg-[#080808] border border-[#131313] rounded-2xl p-7 sm:p-9">
             <div className="space-y-6 mb-8">
               {/* Contact summary */}
               <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-[#555555] mb-3">
+                <p className="text-xs font-semibold uppercase tracking-widest text-white/25 mb-3">
                   Contact Info
                 </p>
-                <div className="bg-[#0e0e0e] border border-[#1a1a1a] rounded-xl p-4 text-sm space-y-1.5">
+                <div className="bg-black/30 border border-[#131313] rounded-xl p-4 text-sm space-y-1.5">
                   <div className="flex justify-between">
-                    <span className="text-[#555555]">Name</span>
-                    <span className="text-[#f5f5f5]">{formData.name}</span>
+                    <span className="text-white/25">Name</span>
+                    <span className="text-white">{formData.name}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-[#555555]">Email</span>
-                    <span className="text-[#f5f5f5]">{formData.email}</span>
+                    <span className="text-white/25">Email</span>
+                    <span className="text-white">{formData.email}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-[#555555]">Phone</span>
-                    <span className="text-[#f5f5f5]">{formData.phone}</span>
+                    <span className="text-white/25">Phone</span>
+                    <span className="text-white">{formData.phone}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-[#555555]">Business</span>
-                    <span className="text-[#f5f5f5]">{formData.businessName}</span>
+                    <span className="text-white/25">Business</span>
+                    <span className="text-white">{formData.businessName}</span>
                   </div>
                   {formData.website && (
                     <div className="flex justify-between">
-                      <span className="text-[#555555]">Website</span>
-                      <span className="text-[#f5f5f5]">{formData.website}</span>
+                      <span className="text-white/25">Website</span>
+                      <span className="text-white">{formData.website}</span>
                     </div>
                   )}
                 </div>
                 <button
                   onClick={() => setStep(1)}
-                  className="text-xs text-[#c9a84c] hover:text-[#e4c97a] mt-2 transition-colors"
+                  className="text-xs text-white/60 hover:text-white/80 mt-2 transition-colors"
                 >
                   Edit
                 </button>
@@ -452,7 +445,7 @@ function GetStartedContent() {
 
               {/* Order summary */}
               <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-[#555555] mb-3">
+                <p className="text-xs font-semibold uppercase tracking-widest text-white/25 mb-3">
                   Order Summary
                 </p>
                 <div className="space-y-2">
@@ -461,15 +454,15 @@ function GetStartedContent() {
                     return (
                       <div
                         key={id}
-                        className="flex items-center justify-between bg-[#0e0e0e] border border-[#1a1a1a] rounded-xl px-4 py-3"
+                        className="flex items-center justify-between bg-black/30 border border-[#131313] rounded-xl px-4 py-3"
                       >
                         <div className="flex items-center gap-3">
                           <span>{s.icon}</span>
-                          <span className="text-sm text-[#f5f5f5] font-medium">{s.name}</span>
+                          <span className="text-sm text-white font-medium">{s.name}</span>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm font-bold text-[#f5f5f5]">${s.setup}</p>
-                          <p className="text-xs text-[#444444]">${s.monthly}/mo after</p>
+                          <p className="text-sm font-bold text-white">${s.setup}</p>
+                          <p className="text-xs text-white/20">${s.monthly}/mo after</p>
                         </div>
                       </div>
                     );
@@ -477,21 +470,21 @@ function GetStartedContent() {
                 </div>
                 <button
                   onClick={() => setStep(2)}
-                  className="text-xs text-[#c9a84c] hover:text-[#e4c97a] mt-2 transition-colors"
+                  className="text-xs text-white/60 hover:text-white/80 mt-2 transition-colors"
                 >
                   Edit services
                 </button>
               </div>
 
               {/* Total */}
-              <div className="bg-[#c9a84c]/5 border border-[#c9a84c]/20 rounded-xl p-4">
+              <div className="bg-white/[0.02] border border-white/8 rounded-xl p-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-[#888888] text-sm">Due today (setup fee)</span>
-                  <span className="text-2xl font-bold text-[#f5f5f5]">${totalSetup}</span>
+                  <span className="text-white/40 text-sm">Due today (setup fee)</span>
+                  <span className="text-2xl font-bold text-white">${totalSetup}</span>
                 </div>
                 <div className="flex justify-between items-center mt-1">
-                  <span className="text-[#555555] text-xs">Monthly after setup</span>
-                  <span className="text-[#888888] text-sm">${totalMonthly}/mo</span>
+                  <span className="text-white/25 text-xs">Monthly after setup</span>
+                  <span className="text-white/40 text-sm">${totalMonthly}/mo</span>
                 </div>
               </div>
             </div>
@@ -506,14 +499,14 @@ function GetStartedContent() {
               <button
                 type="button"
                 onClick={() => { setStep(2); setError(""); }}
-                className="border border-[#2a2a2a] text-[#666666] hover:text-[#f5f5f5] hover:border-[#3a3a3a] font-medium py-4 px-6 rounded-xl text-sm transition-all"
+                className="border border-[#1a1a1a] text-white/35 hover:text-white hover:border-[#222222] font-medium py-4 px-6 rounded-xl text-sm transition-all"
               >
                 ← Back
               </button>
               <button
                 onClick={handleCheckout}
                 disabled={loading}
-                className="btn-gold flex-1 text-[#0a0a0a] font-bold py-4 rounded-xl text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                className="btn-primary flex-1 font-bold py-4 rounded-xl text-sm disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {loading ? "Redirecting to payment…" : `Pay $${totalSetup} Setup Fee →`}
               </button>
@@ -531,7 +524,7 @@ function GetStartedContent() {
 
 export default function GetStartedPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen pt-24 flex items-center justify-center"><div className="text-[#555555]">Loading…</div></div>}>
+    <Suspense fallback={<div className="min-h-screen pt-24 flex items-center justify-center"><div className="text-white/25">Loading…</div></div>}>
       <GetStartedContent />
     </Suspense>
   );

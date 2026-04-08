@@ -2,9 +2,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Services — JP Intelligence",
+  title: "Services",
   description:
-    "AI Chatbots, ManyChat Automation, Call Intelligence, and AI Booking Systems built for local businesses.",
+    "AI Chatbots, ManyChat Automation, Call Intelligence, and AI Booking Systems — built and managed for local businesses by JP Intelligence.",
 };
 
 const services = [
@@ -106,7 +106,7 @@ const services = [
   },
 ];
 
-const fullStackPackage = {
+const fullStack = {
   title: "Full Stack Package",
   tagline: "All four systems. One seamless operation.",
   price: { setup: 1200, monthly: 500 },
@@ -119,79 +119,62 @@ export default function ServicesPage() {
   return (
     <>
       {/* Header */}
-      <section className="pt-32 pb-16 px-4 sm:px-6 relative">
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(#c9a84c 1px, transparent 1px), linear-gradient(to right, #c9a84c 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-          }}
-        />
+      <section className="pt-36 pb-16 px-4 sm:px-6 relative">
+        <div className="absolute inset-0 bg-grid" />
         <div className="relative max-w-4xl mx-auto text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#c9a84c] mb-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-white/25 mb-4">
             Our Services
           </p>
-          <h1 className="text-4xl sm:text-5xl font-bold text-[#f5f5f5] mb-6 leading-tight">
-            Four AI Systems That Work
+          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6 leading-tight">
+            Four AI systems that work
             <br />
-            <span className="text-gold-gradient">While You Work</span>
+            <span className="text-white/40">while you work.</span>
           </h1>
-          <p className="text-[#666666] text-lg max-w-2xl mx-auto leading-relaxed">
+          <p className="text-white/40 text-lg max-w-2xl mx-auto leading-relaxed">
             Each system is custom-configured for your business, deployed within
-            5–7 days, and monitored month over month. No templates. No
-            guesswork.
+            5–7 days, and monitored month over month.
           </p>
         </div>
       </section>
 
       {/* Services */}
       <section className="pb-16 px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto space-y-10">
+        <div className="max-w-5xl mx-auto space-y-8">
           {services.map((service) => (
             <div
               key={service.id}
-              className="bg-[#111111] border border-[#1a1a1a] rounded-2xl overflow-hidden"
+              className="bg-[#080808] border border-[#131313] rounded-2xl overflow-hidden"
             >
               {/* Card header */}
-              <div className="p-8 sm:p-10 border-b border-[#1a1a1a]">
+              <div className="p-8 sm:p-10 border-b border-[#111111]">
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                   <div className="flex items-start gap-5">
-                    <div className="w-14 h-14 rounded-xl bg-[#1a1a1a] flex items-center justify-center text-3xl flex-shrink-0">
+                    <div className="w-13 h-13 rounded-xl bg-white/5 border border-white/8 flex items-center justify-center text-2xl flex-shrink-0 p-3">
                       {service.icon}
                     </div>
                     <div>
                       <div className="flex items-center gap-3 mb-1">
-                        <h2 className="text-2xl font-bold text-[#f5f5f5]">
-                          {service.title}
-                        </h2>
+                        <h2 className="text-xl font-bold text-white">{service.title}</h2>
                         {service.badge && (
-                          <span className="text-xs font-semibold uppercase tracking-wider text-[#0a0a0a] bg-[#c9a84c] px-2.5 py-1 rounded-full">
+                          <span className="text-xs font-bold uppercase tracking-wider text-black bg-white px-2.5 py-0.5 rounded-full">
                             {service.badge}
                           </span>
                         )}
                       </div>
-                      <p className="text-[#c9a84c] text-sm font-medium">
-                        {service.tagline}
-                      </p>
+                      <p className="text-white/35 text-sm">{service.tagline}</p>
                     </div>
                   </div>
-
                   <div className="sm:text-right flex-shrink-0">
-                    <p className="text-2xl font-bold text-[#f5f5f5]">
+                    <p className="text-xl font-bold text-white">
                       ${service.price.setup}
-                      <span className="text-sm font-normal text-[#555555] ml-1">
-                        setup
-                      </span>
+                      <span className="text-sm font-normal text-white/30 ml-1">setup</span>
                     </p>
-                    <p className="text-sm text-[#888888]">
-                      + ${service.price.monthly}
-                      <span className="text-[#555555]">/mo</span>
+                    <p className="text-sm text-white/35">
+                      + ${service.price.monthly}<span className="text-white/25">/mo</span>
                     </p>
                   </div>
                 </div>
-
-                <p className="mt-6 text-[#777777] leading-relaxed text-sm sm:text-base">
+                <p className="mt-6 text-white/40 leading-relaxed text-sm">
                   {service.description}
                 </p>
               </div>
@@ -199,68 +182,40 @@ export default function ServicesPage() {
               {/* Features + Who it's for */}
               <div className="p-8 sm:p-10 grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-widest text-[#555555] mb-4">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-white/20 mb-4">
                     What&apos;s Included
                   </p>
                   <ul className="space-y-3">
                     {service.features.map((f) => (
                       <li key={f} className="flex items-start gap-3">
-                        <span className="text-[#c9a84c] mt-0.5 flex-shrink-0">
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
-                        </span>
-                        <span className="text-sm text-[#888888]">{f}</span>
+                        <svg className="w-4 h-4 text-white/40 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-sm text-white/40">{f}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
-
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-widest text-[#555555] mb-4">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-white/20 mb-4">
                     Who It&apos;s For
                   </p>
-                  <ul className="space-y-3">
+                  <ul className="space-y-3 mb-8">
                     {service.whoFor.map((w) => (
                       <li key={w} className="flex items-start gap-3">
-                        <span className="text-[#c9a84c] mt-0.5 flex-shrink-0">
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 5l7 7-7 7"
-                            />
-                          </svg>
-                        </span>
-                        <span className="text-sm text-[#888888]">{w}</span>
+                        <svg className="w-4 h-4 text-white/30 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                        <span className="text-sm text-white/40">{w}</span>
                       </li>
                     ))}
                   </ul>
-
-                  <div className="mt-8">
-                    <Link
-                      href="/get-started"
-                      className="btn-gold inline-block text-sm font-bold text-[#0a0a0a] px-6 py-3 rounded-full"
-                    >
-                      Get This Service →
-                    </Link>
-                  </div>
+                  <Link
+                    href="/get-started"
+                    className="btn-primary inline-block text-sm font-bold px-6 py-3 rounded-full"
+                  >
+                    Get This Service →
+                  </Link>
                 </div>
               </div>
             </div>
@@ -269,72 +224,44 @@ export default function ServicesPage() {
       </section>
 
       {/* Full Stack Package */}
-      <section className="py-16 px-4 sm:px-6">
+      <section className="py-14 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="relative bg-[#111111] border border-[#c9a84c]/30 rounded-2xl p-8 sm:p-12 overflow-hidden">
+          <div className="relative card-featured rounded-2xl p-8 sm:p-12 overflow-hidden">
             <div
-              className="absolute inset-0 opacity-[0.04]"
-              style={{
-                background:
-                  "radial-gradient(ellipse at top right, #c9a84c 0%, transparent 60%)",
-              }}
+              className="absolute inset-0 opacity-[0.03] rounded-2xl"
+              style={{ background: "radial-gradient(ellipse at top right, #fff 0%, transparent 60%)" }}
             />
-            <div className="relative">
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 mb-8">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-widest text-[#c9a84c] mb-2">
-                    Best Value
-                  </p>
-                  <h2 className="text-3xl font-bold text-[#f5f5f5]">
-                    {fullStackPackage.title}
-                  </h2>
-                  <p className="text-[#888888] mt-2">{fullStackPackage.tagline}</p>
-                </div>
-                <div className="sm:text-right flex-shrink-0">
-                  <p className="text-3xl font-bold text-[#f5f5f5]">
-                    ${fullStackPackage.price.setup}
-                    <span className="text-base font-normal text-[#555555] ml-1">
-                      setup
-                    </span>
-                  </p>
-                  <p className="text-[#888888]">
-                    + ${fullStackPackage.price.monthly}/mo
-                  </p>
-                  <p className="mt-1 text-xs text-[#c9a84c]">
-                    Save ${fullStackPackage.savings.setup} setup ·{" "}
-                    ${fullStackPackage.savings.monthly}/mo off
-                  </p>
-                </div>
+            <div className="relative flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 mb-7">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-2">Best Value</p>
+                <h2 className="text-2xl font-bold text-white">{fullStack.title}</h2>
+                <p className="text-white/40 mt-1 text-sm">{fullStack.tagline}</p>
               </div>
-
-              <p className="text-[#777777] leading-relaxed mb-8">
-                {fullStackPackage.description}
-              </p>
-
-              <Link
-                href="/get-started"
-                className="btn-gold inline-block text-base font-bold text-[#0a0a0a] px-8 py-4 rounded-full"
-              >
-                Get the Full Stack Package →
-              </Link>
+              <div className="sm:text-right flex-shrink-0">
+                <p className="text-2xl font-bold text-white">
+                  ${fullStack.price.setup}
+                  <span className="text-sm font-normal text-white/30 ml-1">setup</span>
+                </p>
+                <p className="text-white/40 text-sm">+ ${fullStack.price.monthly}/mo</p>
+                <p className="mt-1 text-xs text-white/30">
+                  Save ${fullStack.savings.setup} setup · ${fullStack.savings.monthly}/mo off
+                </p>
+              </div>
             </div>
+            <p className="text-white/40 leading-relaxed text-sm mb-7">{fullStack.description}</p>
+            <Link href="/get-started?service=full-stack" className="btn-primary inline-block text-sm font-bold px-7 py-3.5 rounded-full">
+              Get the Full Stack Package →
+            </Link>
           </div>
         </div>
       </section>
 
       {/* Bottom CTA */}
       <section className="py-20 px-4 sm:px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <p className="text-[#555555] mb-4 text-sm">
-            Not sure which service is right for you?
-          </p>
-          <h2 className="text-3xl font-bold text-[#f5f5f5] mb-6">
-            Let&apos;s figure it out together.
-          </h2>
-          <Link
-            href="/get-started"
-            className="btn-gold inline-block text-base font-bold text-[#0a0a0a] px-8 py-4 rounded-full"
-          >
+        <div className="max-w-2xl mx-auto text-center">
+          <p className="text-white/30 mb-3 text-sm">Not sure which service is right for you?</p>
+          <h2 className="text-3xl font-bold text-white mb-6">Let&apos;s figure it out together.</h2>
+          <Link href="/get-started" className="btn-primary inline-block text-base font-bold px-8 py-4 rounded-full">
             Start the Conversation
           </Link>
         </div>
