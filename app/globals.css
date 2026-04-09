@@ -191,6 +191,23 @@ body {
 ::-webkit-scrollbar-thumb { background: #222222; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #444444; }
 
+/* ── Logo hover glow ──────────────────────────────────────────────────────── */
+
+@keyframes logoShine {
+  0%   { filter: drop-shadow(0 0 0px rgba(255,255,255,0)) brightness(1); }
+  50%  { filter: drop-shadow(0 0 12px rgba(255,255,255,0.55)) brightness(1.15); }
+  100% { filter: drop-shadow(0 0 0px rgba(255,255,255,0)) brightness(1); }
+}
+
+.logo-img {
+  transition: filter 0.3s ease;
+  filter: drop-shadow(0 0 0px rgba(255,255,255,0));
+}
+
+.logo-img:hover {
+  animation: logoShine 1.2s ease forwards;
+}
+
 /* ── Floating Demo Button ─────────────────────────────────────────────────── */
 
 .floating-demo {

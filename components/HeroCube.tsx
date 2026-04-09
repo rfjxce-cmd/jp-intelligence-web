@@ -3,177 +3,253 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   Helper: build a LineSegments object from a list of [start, end] Vector3 pairs
+───────────────────────────────────────────────────────────────────────────── */
+function makeLines(
+  pairs: [THREE.Vector3, THREE.Vector3][],
+  color: number,
+  opacity: number
+): THREE.LineSegments {
+  const pts: number[] = [];
+  for (const [a, b] of pairs) {
+    pts.push(a.x, a.y, a.z, b.x, b.y, b.z);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
+  const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity });
+  return new THREE.LineSegments(geo, mat);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   All 8 corners of a unit cube (±1)
+───────────────────────────────────────────────────────────────────────────── */
+const V = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
+const CORNERS = [
+  V(-1,-1,-1), V( 1,-1,-1), V( 1, 1,-1), V(-1, 1,-1), // back face
+  V(-1,-1, 1), V( 1,-1, 1), V( 1, 1, 1), V(-1, 1, 1), // front face
+];
+
 export default function HeroCube() {
   const mountRef = useRef<HTMLDivElement>(null);
-  const mouseRef = useRef({ x: 0, y: 0 });
+  const mouse = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return;
 
-    // ── Scene ──────────────────────────────────────────────────────────────
+    // ── Scene / Camera / Renderer ────────────────────────────────────────
     const scene = new THREE.Scene();
-
-    const W = mount.clientWidth;
-    const H = mount.clientHeight;
-    const camera = new THREE.PerspectiveCamera(42, W / H, 0.1, 200);
-    camera.position.set(3.2, 2.2, 5.5);
-    camera.lookAt(0, 0, 0);
+    const camera = new THREE.PerspectiveCamera(
+      42, mount.clientWidth / mount.clientHeight, 0.1, 200
+    );
+    camera.position.set(3.4, 2.2, 5.8);
+    camera.lookAt(0, 0.1, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(W, H);
+    renderer.setSize(mount.clientWidth, mount.clientHeight);
     renderer.setClearColor(0x000000, 0);
     mount.appendChild(renderer.domElement);
 
-    // ── Outer cube wireframe ───────────────────────────────────────────────
-    const outerGeo = new THREE.BoxGeometry(2, 2, 2);
+    // ── Pivot group (everything rotates together) ────────────────────────
+    const pivot = new THREE.Group();
+    scene.add(pivot);
+
+    // ═══════════════════════════════════════════════════════════════════
+    // 1. OUTER CUBE — bright wireframe edges
+    // ═══════════════════════════════════════════════════════════════════
+    const outerGeo   = new THREE.BoxGeometry(2, 2, 2);
     const outerEdges = new THREE.EdgesGeometry(outerGeo);
-    const outerMat = new THREE.LineBasicMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.9,
-    });
-    const outerWire = new THREE.LineSegments(outerEdges, outerMat);
-    scene.add(outerWire);
+    const outerWire  = new THREE.LineSegments(
+      outerEdges,
+      new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.92 })
+    );
+    pivot.add(outerWire);
 
-    // Outer cube glass fill
-    const glassMat = new THREE.MeshPhysicalMaterial({
-      color: 0x0a0a0a,
-      transparent: true,
-      opacity: 0.06,
-      side: THREE.DoubleSide,
-    });
-    const glassMesh = new THREE.Mesh(outerGeo, glassMat);
-    scene.add(glassMesh);
+    // Glass fill
+    const glassMesh = new THREE.Mesh(
+      outerGeo,
+      new THREE.MeshPhysicalMaterial({
+        color: 0x080808, transparent: true, opacity: 0.05, side: THREE.DoubleSide,
+      })
+    );
+    pivot.add(glassMesh);
 
-    // ── Inner icosahedron ──────────────────────────────────────────────────
-    const icoGeo = new THREE.IcosahedronGeometry(0.72, 0);
-    const icoEdges = new THREE.EdgesGeometry(icoGeo);
-    const icoMat = new THREE.LineBasicMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.55,
-    });
-    const icoWire = new THREE.LineSegments(icoEdges, icoMat);
-    scene.add(icoWire);
+    // Glow halo (slightly larger copy, very faint)
+    const glowWire = new THREE.LineSegments(
+      outerEdges,
+      new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.07 })
+    );
+    glowWire.scale.setScalar(1.06);
+    pivot.add(glowWire);
 
-    // ── Second inner cube (smaller, tilted) ────────────────────────────────
-    const innerGeo = new THREE.BoxGeometry(1.15, 1.15, 1.15);
+    // ═══════════════════════════════════════════════════════════════════
+    // 2. INNER CUBE — rotated 45° on all axes, rotates OPPOSITE to outer
+    // ═══════════════════════════════════════════════════════════════════
+    const innerGeo   = new THREE.BoxGeometry(1.25, 1.25, 1.25);
     const innerEdges = new THREE.EdgesGeometry(innerGeo);
-    const innerMat = new THREE.LineBasicMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.22,
-    });
-    const innerWire = new THREE.LineSegments(innerEdges, innerMat);
-    innerWire.rotation.set(0.4, 0.4, 0.1);
-    scene.add(innerWire);
+    const innerWire  = new THREE.LineSegments(
+      innerEdges,
+      new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45 })
+    );
+    // Start tilted so it's visually interesting from frame 0
+    innerWire.rotation.set(Math.PI / 4, Math.PI / 4, 0);
+    pivot.add(innerWire);
 
-    // ── Vertex particles ───────────────────────────────────────────────────
-    const corners = [
-      [-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1],
-      [-1, -1,  1], [1, -1,  1], [1, 1,  1], [-1, 1,  1],
+    // ═══════════════════════════════════════════════════════════════════
+    // 3. INTERNAL SPACE DIAGONALS — lines connecting every pair of
+    //    opposite vertices through the center (4 main body diagonals)
+    // ═══════════════════════════════════════════════════════════════════
+    const bodyDiagonalPairs: [THREE.Vector3, THREE.Vector3][] = [
+      [CORNERS[0], CORNERS[6]], // (-1,-1,-1) → ( 1, 1, 1)
+      [CORNERS[1], CORNERS[7]], // ( 1,-1,-1) → (-1, 1, 1)
+      [CORNERS[2], CORNERS[4]], // ( 1, 1,-1) → (-1,-1, 1)
+      [CORNERS[3], CORNERS[5]], // (-1, 1,-1) → ( 1,-1, 1)
     ];
-    const particleGroup = new THREE.Group();
-    const dotGeo = new THREE.SphereGeometry(0.04, 8, 8);
+    const bodyDiags = makeLines(bodyDiagonalPairs, 0xffffff, 0.18);
+    pivot.add(bodyDiags);
+
+    // ═══════════════════════════════════════════════════════════════════
+    // 4. FACE DIAGONALS — two crossing diagonals on each of the 6 faces
+    // ═══════════════════════════════════════════════════════════════════
+    const faceDiagonalPairs: [THREE.Vector3, THREE.Vector3][] = [
+      // Front face (z = +1)
+      [V(-1,-1, 1), V( 1, 1, 1)], [V( 1,-1, 1), V(-1, 1, 1)],
+      // Back face  (z = -1)
+      [V(-1,-1,-1), V( 1, 1,-1)], [V( 1,-1,-1), V(-1, 1,-1)],
+      // Left face  (x = -1)
+      [V(-1,-1,-1), V(-1, 1, 1)], [V(-1, 1,-1), V(-1,-1, 1)],
+      // Right face (x = +1)
+      [V( 1,-1,-1), V( 1, 1, 1)], [V( 1, 1,-1), V( 1,-1, 1)],
+      // Top face   (y = +1)
+      [V(-1, 1,-1), V( 1, 1, 1)], [V( 1, 1,-1), V(-1, 1, 1)],
+      // Bottom face (y = -1)
+      [V(-1,-1,-1), V( 1,-1, 1)], [V( 1,-1,-1), V(-1,-1, 1)],
+    ];
+    const faceDiags = makeLines(faceDiagonalPairs, 0xffffff, 0.13);
+    pivot.add(faceDiags);
+
+    // ═══════════════════════════════════════════════════════════════════
+    // 5. VERTEX DOTS — glowing points at all 8 corners
+    // ═══════════════════════════════════════════════════════════════════
+    const dotGeo = new THREE.SphereGeometry(0.045, 8, 8);
     const dotMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-    corners.forEach(([x, y, z]) => {
+    CORNERS.forEach(({ x, y, z }) => {
       const dot = new THREE.Mesh(dotGeo, dotMat);
       dot.position.set(x, y, z);
-      particleGroup.add(dot);
+      pivot.add(dot);
     });
-    scene.add(particleGroup);
 
-    // ── Floating ambient particles ─────────────────────────────────────────
-    const pCount = 80;
-    const pPositions = new Float32Array(pCount * 3);
+    // ═══════════════════════════════════════════════════════════════════
+    // 6. EDGE MIDPOINT MARKERS — small dots at midpoint of each edge
+    // ═══════════════════════════════════════════════════════════════════
+    const edgeMidpoints: THREE.Vector3[] = [
+      // Bottom edges
+      V(0,-1,-1), V(1,-1,0), V(0,-1,1), V(-1,-1,0),
+      // Top edges
+      V(0, 1,-1), V(1, 1,0), V(0, 1,1), V(-1, 1,0),
+      // Vertical edges
+      V(-1,0,-1), V(1,0,-1), V(1,0,1), V(-1,0,1),
+    ];
+    const midGeo = new THREE.SphereGeometry(0.028, 6, 6);
+    const midMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.55 });
+    edgeMidpoints.forEach(({ x, y, z }) => {
+      const dot = new THREE.Mesh(midGeo, midMat);
+      dot.position.set(x, y, z);
+      pivot.add(dot);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════
+    // 7. CENTER CROSS-HAIRS — 3 axis lines through origin
+    // ═══════════════════════════════════════════════════════════════════
+    const axisPairs: [THREE.Vector3, THREE.Vector3][] = [
+      [V(-1.1, 0, 0), V(1.1, 0, 0)],
+      [V(0, -1.1, 0), V(0, 1.1, 0)],
+      [V(0, 0, -1.1), V(0, 0, 1.1)],
+    ];
+    const axisLines = makeLines(axisPairs, 0xffffff, 0.1);
+    pivot.add(axisLines);
+
+    // ═══════════════════════════════════════════════════════════════════
+    // 8. FLOATING PARTICLES
+    // ═══════════════════════════════════════════════════════════════════
+    const pCount = 90;
+    const pPos = new Float32Array(pCount * 3);
     for (let i = 0; i < pCount; i++) {
-      pPositions[i * 3]     = (Math.random() - 0.5) * 8;
-      pPositions[i * 3 + 1] = (Math.random() - 0.5) * 8;
-      pPositions[i * 3 + 2] = (Math.random() - 0.5) * 8;
+      pPos[i * 3]     = (Math.random() - 0.5) * 9;
+      pPos[i * 3 + 1] = (Math.random() - 0.5) * 9;
+      pPos[i * 3 + 2] = (Math.random() - 0.5) * 9;
     }
     const pGeo = new THREE.BufferGeometry();
-    pGeo.setAttribute("position", new THREE.BufferAttribute(pPositions, 3));
-    const pMat = new THREE.PointsMaterial({
-      color: 0xffffff,
-      size: 0.025,
-      transparent: true,
-      opacity: 0.35,
-    });
-    const particles = new THREE.Points(pGeo, pMat);
-    scene.add(particles);
+    pGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3));
+    const particles = new THREE.Points(
+      pGeo,
+      new THREE.PointsMaterial({ color: 0xffffff, size: 0.022, transparent: true, opacity: 0.3 })
+    );
+    scene.add(particles); // not in pivot — stays fixed while cube rotates
 
-    // ── Ground grid plane ──────────────────────────────────────────────────
-    const gridHelper = new THREE.GridHelper(7, 10, 0x1a1a1a, 0x111111);
-    gridHelper.position.y = -1.5;
-    (gridHelper.material as THREE.LineBasicMaterial).transparent = true;
-    (gridHelper.material as THREE.LineBasicMaterial).opacity = 0.4;
-    scene.add(gridHelper);
+    // ═══════════════════════════════════════════════════════════════════
+    // 9. GROUND GRID
+    // ═══════════════════════════════════════════════════════════════════
+    const grid = new THREE.GridHelper(8, 12, 0x181818, 0x111111);
+    grid.position.y = -1.6;
+    (grid.material as THREE.LineBasicMaterial).transparent = true;
+    (grid.material as THREE.LineBasicMaterial).opacity = 0.45;
+    scene.add(grid);
 
-    // ── Edge glow (wide white lines behind the main wireframe) ────────────
-    const glowMat = new THREE.LineBasicMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.06,
-      linewidth: 1,
-    });
-    const glowWire = new THREE.LineSegments(outerEdges, glowMat);
-    glowWire.scale.setScalar(1.05);
-    scene.add(glowWire);
-
-    // ── Lights ─────────────────────────────────────────────────────────────
-    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-    const pt = new THREE.PointLight(0xffffff, 1.2, 12);
+    // ── Lights ───────────────────────────────────────────────────────────
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+    const pt = new THREE.PointLight(0xffffff, 1.2, 14);
     pt.position.set(4, 4, 4);
     scene.add(pt);
 
-    // ── Mouse parallax ────────────────────────────────────────────────────
+    // ── Mouse parallax ───────────────────────────────────────────────────
     function onMouseMove(e: MouseEvent) {
-      // normalise to [-1, 1]
-      mouseRef.current.x = (e.clientX / window.innerWidth  - 0.5) * 2;
-      mouseRef.current.y = (e.clientY / window.innerHeight - 0.5) * 2;
+      mouse.current.x = (e.clientX / window.innerWidth  - 0.5) * 2;
+      mouse.current.y = (e.clientY / window.innerHeight - 0.5) * 2;
     }
     window.addEventListener("mousemove", onMouseMove);
 
-    // ── Animation loop ────────────────────────────────────────────────────
+    // ── Animation loop ───────────────────────────────────────────────────
     let frameId: number;
     const clock = new THREE.Clock();
-    const pivot = new THREE.Group();
-    scene.add(pivot);
-    pivot.add(outerWire, glassMesh, icoWire, innerWire, particleGroup, glowWire);
+
+    // Store base rotation separately so inner cube can counter-rotate
+    let baseRotX = 0;
+    let baseRotY = 0;
 
     function animate() {
       frameId = requestAnimationFrame(animate);
-      const t = clock.getElapsedTime();
+      const dt = clock.getDelta();
 
-      // Base rotation
-      pivot.rotation.x = t * 0.20;
-      pivot.rotation.y = t * 0.28;
+      // Outer cube / pivot rotates forward
+      baseRotX += dt * 0.18;
+      baseRotY += dt * 0.26;
 
-      // Mouse parallax offset (lerp toward target)
-      pivot.rotation.x += mouseRef.current.y * 0.18;
-      pivot.rotation.y += mouseRef.current.x * 0.18;
+      pivot.rotation.x = baseRotX + mouse.current.y * 0.15;
+      pivot.rotation.y = baseRotY + mouse.current.x * 0.15;
 
-      // Counter-rotate inner elements for visual depth
-      icoWire.rotation.x = -t * 0.38;
-      icoWire.rotation.y =  t * 0.52;
-      innerWire.rotation.x = t * 0.30 + 0.4;
-      innerWire.rotation.y = -t * 0.22 + 0.4;
+      // Inner cube rotates OPPOSITE direction at different speed
+      // Its rotation is in local space, so subtract twice to cancel parent + add reverse
+      innerWire.rotation.x = Math.PI / 4 - baseRotX * 2.1;
+      innerWire.rotation.y = Math.PI / 4 - baseRotY * 1.8;
 
-      // Breathing scale
-      const s = 1 + Math.sin(t * 0.7) * 0.025;
-      pivot.scale.setScalar(s);
+      // Breathing scale on outer geometry
+      const s = 1 + Math.sin(clock.getElapsedTime() * 0.65) * 0.022;
+      outerWire.scale.setScalar(s);
+      glassMesh.scale.setScalar(s);
+      glowWire.scale.setScalar(s * 1.06);
 
-      // Particles drift slowly
-      particles.rotation.y = t * 0.04;
-      particles.rotation.x = t * 0.02;
+      // Particles drift slowly, independent of pivot
+      particles.rotation.y += dt * 0.035;
+      particles.rotation.x += dt * 0.015;
 
       renderer.render(scene, camera);
     }
     animate();
 
-    // ── Resize ─────────────────────────────────────────────────────────────
+    // ── Resize ────────────────────────────────────────────────────────────
     function handleResize() {
       if (!mount) return;
       camera.aspect = mount.clientWidth / mount.clientHeight;
@@ -188,8 +264,7 @@ export default function HeroCube() {
       window.removeEventListener("resize", handleResize);
       mount.removeChild(renderer.domElement);
       renderer.dispose();
-      [outerGeo, outerEdges, icoGeo, icoEdges, innerGeo, innerEdges,
-       dotGeo, pGeo].forEach(g => g.dispose());
+      [outerGeo, outerEdges, innerGeo, innerEdges, dotGeo, pGeo, midGeo].forEach(g => g.dispose());
     };
   }, []);
 

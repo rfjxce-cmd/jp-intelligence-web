@@ -1,4 +1,5 @@
 import Link from "next/link";
+import LogoImage from "./LogoImage";
 
 const navLinks = [
   { href: "/about",       label: "About" },
@@ -46,10 +47,10 @@ export default function Footer() {
 
           {/* Brand */}
           <div>
-            <p className="text-xl font-semibold text-white tracking-tight">
-              JP <span className="text-white/40">Intelligence</span>
-            </p>
-            <p className="mt-3 text-sm text-white/30 leading-relaxed max-w-xs">
+            <Link href="/" className="inline-block mb-3">
+              <LogoImage height={32} />
+            </Link>
+            <p className="mt-1 text-sm text-white/30 leading-relaxed max-w-xs">
               AI automation built for local businesses. We handle the technology
               so you can focus on growth.
             </p>
